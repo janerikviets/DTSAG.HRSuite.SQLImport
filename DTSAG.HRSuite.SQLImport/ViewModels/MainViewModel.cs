@@ -128,6 +128,9 @@ public class MainViewModel : ViewModelBase
     private bool _isBusy;
     public bool IsBusy { get => _isBusy; set => Set(ref _isBusy, value); }
 
+    private bool _updateExisting;
+    public bool UpdateExisting { get => _updateExisting; set => Set(ref _updateExisting, value); }
+
     // ── Commands ──────────────────────────────────────────────────────────────
 
     public RelayCommand AddServerCommand { get; }
@@ -307,13 +310,23 @@ public class MainViewModel : ViewModelBase
     {
         if (string.IsNullOrEmpty(CsvFilePath) || string.IsNullOrEmpty(SelectedTable)) return;
         IsBusy = true;
-        ImportStatus = "Importiere Daten...";
+        ImportStatus = UpdateExisting ? "Führe MERGE (Insert + Update) durch..." : "Importiere Daten...";
         try
         {
             var delim = string.IsNullOrEmpty(Delimiter) ? ';' : Delimiter[0];
             var (_, rows) = CsvService.Read(CsvFilePath, delim);
-            var count = await new DatabaseService(_settings).ImportAsync(SelectedTable, [.. ColumnMappings], rows);
-            ImportStatus = $"Import erfolgreich: {count} Zeile(n) in '{SelectedTable}' importiert.";
+            var svc = new DatabaseService(_settings);
+
+            if (UpdateExisting)
+            {
+                var (inserted, updated) = await svc.MergeAsync(SelectedTable, [.. ColumnMappings], rows);
+                ImportStatus = $"Fertig: {inserted} neu eingefügt, {updated} aktualisiert  –  Tabelle '{SelectedTable}'.";
+            }
+            else
+            {
+                var count = await svc.ImportAsync(SelectedTable, [.. ColumnMappings], rows);
+                ImportStatus = $"Import erfolgreich: {count} Zeile(n) in '{SelectedTable}' importiert.";
+            }
         }
         catch (Exception ex)
         {

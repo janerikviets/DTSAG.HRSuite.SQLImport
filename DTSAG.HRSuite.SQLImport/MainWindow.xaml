@@ -187,6 +187,25 @@
                                         Content="  Importieren  "
                                         Command="{Binding ImportCommand}"
                                         Style="{StaticResource PrimaryButton}"/>
+                                <CheckBox DockPanel.Dock="Right"
+                                          IsChecked="{Binding UpdateExisting}"
+                                          VerticalAlignment="Center"
+                                          Margin="0,0,10,0"
+                                          Cursor="Hand"
+                                          ToolTip="Vorhandene Zeilen per SQL MERGE aktualisieren. Schlüsselspalten in der Tabelle unten markieren.">
+                                    <TextBlock Text="Vorhandene Zeilen aktualisieren">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding UpdateExisting}" Value="True">
+                                                        <Setter Property="FontWeight" Value="SemiBold"/>
+                                                        <Setter Property="Foreground" Value="#0078D4"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </CheckBox>
                                 <Button DockPanel.Dock="Right"
                                         Content="Auto-Mapping"
                                         Command="{Binding AutoMapCommand}"
@@ -282,6 +301,34 @@
                                                     </Style>
                                                 </TextBlock.Style>
                                             </TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <!-- Key column (used for MERGE ON clause) -->
+                                <DataGridTemplateColumn Width="70">
+                                    <DataGridTemplateColumn.Header>
+                                        <StackPanel Orientation="Horizontal" ToolTip="Schlüsselspalten zur Identifikation vorhandener Zeilen (MERGE ON). Nur relevant wenn 'Vorhandene Zeilen aktualisieren' aktiv.">
+                                            <TextBlock Text="Schlüssel"/>
+                                        </StackPanel>
+                                    </DataGridTemplateColumn.Header>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox IsChecked="{Binding IsKey, UpdateSourceTrigger=PropertyChanged}"
+                                                      HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                      Cursor="Hand">
+                                                <CheckBox.Style>
+                                                    <Style TargetType="CheckBox">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding DataContext.UpdateExisting,
+                                                                RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                         Value="False">
+                                                                <Setter Property="Opacity" Value="0.35"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </CheckBox.Style>
+                                            </CheckBox>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>

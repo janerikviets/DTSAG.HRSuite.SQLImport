@@ -6,6 +6,7 @@ namespace DTSAG.HRSuite.SQLImport.Models;
 public class ColumnMapping : INotifyPropertyChanged
 {
     private string _csvColumn = "(ignorieren)";
+    private bool _isKey;
 
     public string DbColumn { get; init; } = string.Empty;
     public string DbColumnType { get; init; } = string.Empty;
@@ -15,6 +16,12 @@ public class ColumnMapping : INotifyPropertyChanged
     {
         get => _csvColumn;
         set { _csvColumn = value; OnPropertyChanged(); }
+    }
+
+    public bool IsKey
+    {
+        get => _isKey;
+        set { _isKey = value; OnPropertyChanged(); }
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
