@@ -1,24 +1,17 @@
-﻿using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using DTSAG.HRSuite.SQLImport.ViewModels;
 
-namespace DTSAG.HRSuite.SQLImport
+namespace DTSAG.HRSuite.SQLImport;
+
+public partial class MainWindow : Window
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    public MainWindow()
     {
-        public MainWindow()
+        InitializeComponent();
+        PwdBox.PasswordChanged += (_, _) =>
         {
-            InitializeComponent();
-        }
+            if (DataContext is MainViewModel vm)
+                vm.Password = PwdBox.Password;
+        };
     }
 }
