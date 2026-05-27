@@ -131,6 +131,12 @@ public class MainViewModel : ViewModelBase
     private bool _updateExisting;
     public bool UpdateExisting { get => _updateExisting; set => Set(ref _updateExisting, value); }
 
+    private bool _identityInsert;
+    public bool IdentityInsert { get => _identityInsert; set => Set(ref _identityInsert, value); }
+
+    private bool _disableConstraints;
+    public bool DisableConstraints { get => _disableConstraints; set => Set(ref _disableConstraints, value); }
+
     // ── Commands ──────────────────────────────────────────────────────────────
 
     public RelayCommand AddServerCommand { get; }
@@ -297,12 +303,26 @@ public class MainViewModel : ViewModelBase
 
     private void AutoMap()
     {
-        if (CsvHeadersWithIgnore.Count <= 1) return;
         foreach (var m in ColumnMappings)
         {
-            var match = CsvHeadersWithIgnore.Skip(1)
-                .FirstOrDefault(h => string.Equals(h, m.DbColumn, StringComparison.OrdinalIgnoreCase));
-            m.CsvColumn = match ?? "(ignorieren)";
+            // Identity columns → ignorieren, solange IDENTITY INSERT nicht aktiv
+            if (m.IsIdentity && !IdentityInsert)
+            {
+                m.CsvColumn = "(ignorieren)";
+                m.IsKey = false;
+                continue;
+            }
+
+            // Name-Matching gegen CSV-Spalten
+            if (CsvHeadersWithIgnore.Count > 1)
+            {
+                var match = CsvHeadersWithIgnore.Skip(1)
+                    .FirstOrDefault(h => string.Equals(h, m.DbColumn, StringComparison.OrdinalIgnoreCase));
+                m.CsvColumn = match ?? "(ignorieren)";
+            }
+
+            // PK-Spalten automatisch als Schlüssel vorschlagen
+            m.IsKey = m.IsPrimaryKey && (!m.IsIdentity || IdentityInsert);
         }
     }
 
@@ -319,12 +339,14 @@ public class MainViewModel : ViewModelBase
 
             if (UpdateExisting)
             {
-                var (inserted, updated) = await svc.MergeAsync(SelectedTable, [.. ColumnMappings], rows);
+                var (inserted, updated) = await svc.MergeAsync(
+                    SelectedTable, [.. ColumnMappings], rows, IdentityInsert, DisableConstraints);
                 ImportStatus = $"Fertig: {inserted} neu eingefügt, {updated} aktualisiert  –  Tabelle '{SelectedTable}'.";
             }
             else
             {
-                var count = await svc.ImportAsync(SelectedTable, [.. ColumnMappings], rows);
+                var count = await svc.ImportAsync(
+                    SelectedTable, [.. ColumnMappings], rows, IdentityInsert, DisableConstraints);
                 ImportStatus = $"Import erfolgreich: {count} Zeile(n) in '{SelectedTable}' importiert.";
             }
         }
