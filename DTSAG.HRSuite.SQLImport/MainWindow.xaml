@@ -112,7 +112,7 @@
                             <Grid>
                                 <TextBox Text="{Binding TableSearch, UpdateSourceTrigger=PropertyChanged}"
                                          VerticalContentAlignment="Center" Padding="4,3"/>
-                                <TextBlock Text="Tabelle suchen…" Style="{StaticResource Placeholder}">
+                                <TextBlock Text="Tabelle suchen…">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock" BasedOn="{StaticResource Placeholder}">
                                             <Style.Triggers>
