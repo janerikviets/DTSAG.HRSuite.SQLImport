@@ -6,8 +6,8 @@
         xmlns:vm="clr-namespace:DTSAG.HRSuite.SQLImport.ViewModels"
         mc:Ignorable="d"
         Title="DTSAG HRSuite – SQL Import"
-        Height="720" Width="1120"
-        MinHeight="520" MinWidth="820"
+        Height="768" Width="1280"
+        MinHeight="540" MinWidth="860"
         WindowStartupLocation="CenterScreen">
 
     <Window.DataContext>
@@ -17,104 +17,283 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolVis"/>
 
-        <!-- Accent color -->
-        <SolidColorBrush x:Key="AccentBrush" Color="#0078D4"/>
-        <SolidColorBrush x:Key="AccentDarkBrush" Color="#005A9E"/>
-        <SolidColorBrush x:Key="MutedBrush" Color="#666666"/>
+        <!-- ── Sidebar nav button ─────────────────────────────── -->
+        <Style x:Key="NavButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#D7D7D7"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="16,10"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="4,2"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1AFFFFFF"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#33FFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-        <!-- Section header -->
-        <Style x:Key="SectionHeader" TargetType="TextBlock">
+        <Style x:Key="NavButtonActiveStyle" TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+            <Setter Property="Background" Value="#5FFFFFFF"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <!-- ── Primary button ────────────────────────────────── -->
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#041737"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="20,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#cc171a"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#AAAAAA"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ── Secondary button ──────────────────────────────── -->
+        <Style x:Key="SecondaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="16,7"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F0F4FF"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#A0B8E0"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#F5F5F5"/>
+                                <Setter Property="Foreground" Value="#AAAAAA"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ── Form controls ─────────────────────────────────── -->
+        <Style x:Key="FormTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin" Value="0,4,0,12"/>
+        </Style>
+
+        <Style x:Key="FormPasswordBoxStyle" TargetType="PasswordBox">
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin" Value="0,4,0,0"/>
+        </Style>
+
+        <Style x:Key="FormComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin" Value="0,4,0,12"/>
+        </Style>
+
+        <!-- ── Card ──────────────────────────────────────────── -->
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E4EAF4"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="20,16"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+
+        <Style x:Key="CardTitleStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#041737"/>
+            <Setter Property="Margin" Value="0,0,0,14"/>
+        </Style>
+
+        <Style x:Key="FormLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="#555555"/>
+            <Setter Property="Margin" Value="0,0,0,3"/>
+        </Style>
+
+        <!-- DataGrid header -->
+        <Style x:Key="DgHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#F0F4FF"/>
+            <Setter Property="Foreground" Value="#041737"/>
+            <Setter Property="BorderBrush" Value="#DCE6F5"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Padding" Value="12,8"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Foreground" Value="#0078D4"/>
-            <Setter Property="Margin" Value="0,0,0,5"/>
-        </Style>
-
-        <!-- Standard button -->
-        <Style x:Key="StdButton" TargetType="Button">
-            <Setter Property="Padding" Value="10,5"/>
-            <Setter Property="MinWidth" Value="80"/>
-            <Setter Property="Cursor" Value="Hand"/>
-        </Style>
-
-        <!-- Primary (blue) button -->
-        <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource StdButton}">
-            <Setter Property="Background" Value="#0078D4"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderBrush" Value="#005A9E"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#005A9E"/>
-                </Trigger>
-                <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Background" Value="#AAAAAA"/>
-                    <Setter Property="BorderBrush" Value="#999999"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <!-- Placeholder overlay helper -->
-        <Style x:Key="Placeholder" TargetType="TextBlock">
-            <Setter Property="IsHitTestVisible" Value="False"/>
-            <Setter Property="Foreground" Value="#AAAAAA"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="6,0"/>
-            <Setter Property="Visibility" Value="Collapsed"/>
         </Style>
     </Window.Resources>
 
-    <DockPanel Background="#F3F3F3">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-        <!-- ── Status bar ─────────────────────────────────────────────── -->
-        <StatusBar DockPanel.Dock="Bottom" Background="#E0E0E0" BorderBrush="#CCCCCC" BorderThickness="0,1,0,0">
-            <StatusBarItem Padding="6,3">
-                <TextBlock Text="{Binding ImportStatus}" Foreground="#333333"/>
-            </StatusBarItem>
-            <Separator/>
-            <StatusBarItem Padding="6,3">
-                <ProgressBar Width="120" Height="10"
-                             IsIndeterminate="{Binding IsBusy}"
-                             Visibility="{Binding IsBusy, Converter={StaticResource BoolVis}}"/>
-            </StatusBarItem>
-        </StatusBar>
+        <!-- ══════════════════════════════════════════════════════
+             SIDEBAR
+             ══════════════════════════════════════════════════════ -->
+        <Border Grid.Column="0" Background="#041737">
+            <DockPanel>
 
-        <!-- ── Main tab control ───────────────────────────────────────── -->
-        <TabControl Margin="8" Background="White" BorderBrush="#DDDDDD">
+                <!-- Logo -->
+                <Border DockPanel.Dock="Top" Padding="20,22,16,18">
+                    <StackPanel>
+                        <TextBlock Text="DTSAG" Foreground="White"
+                                   FontSize="18" FontWeight="Bold" LineHeight="20"/>
+                        <TextBlock Text="SQL Import" Foreground="#B3D4FF"
+                                   FontSize="11" Margin="0,3,0,0"/>
+                    </StackPanel>
+                </Border>
 
-            <!-- ════════════════════════════════════════════════════════════
-                 TAB 1: Import
-                 ════════════════════════════════════════════════════════════ -->
-            <TabItem>
-                <TabItem.Header>
-                    <TextBlock Text="  Import  " FontSize="13" Padding="4,2"/>
-                </TabItem.Header>
+                <!-- Divider -->
+                <Border DockPanel.Dock="Top" Height="1"
+                        Background="#1AFFFFFF" Margin="16,0,16,10"/>
 
-                <Grid Margin="8">
+                <!-- Nav items -->
+                <StackPanel DockPanel.Dock="Top" Margin="8,0">
+                    <Button x:Name="BtnNavImport"
+                            Content="📥  Import"
+                            Style="{StaticResource NavButtonActiveStyle}"
+                            Click="BtnNavImport_Click"/>
+                    <Button x:Name="BtnNavSettings"
+                            Content="⚙️  Einstellungen"
+                            Style="{StaticResource NavButtonStyle}"
+                            Click="BtnNavSettings_Click"/>
+                </StackPanel>
+
+                <!-- Version -->
+                <Border DockPanel.Dock="Bottom" Padding="20,12">
+                    <TextBlock Text="v1.0" Foreground="#3A4A60" FontSize="11"/>
+                </Border>
+
+            </DockPanel>
+        </Border>
+
+        <!-- ══════════════════════════════════════════════════════
+             CONTENT AREA
+             ══════════════════════════════════════════════════════ -->
+        <DockPanel Grid.Column="1" Background="#F5F7FA">
+
+            <!-- Page header bar -->
+            <Border DockPanel.Dock="Top"
+                    Background="#F0F4FF"
+                    BorderBrush="#C8D8FF" BorderThickness="0,0,0,1"
+                    Height="52">
+                <DockPanel Margin="24,0">
+                    <TextBlock x:Name="PageTitle"
+                               DockPanel.Dock="Left"
+                               Text="Import"
+                               FontSize="16" FontWeight="SemiBold"
+                               Foreground="#041737"
+                               VerticalAlignment="Center"/>
+                    <StackPanel DockPanel.Dock="Right"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center">
+                        <ProgressBar Width="90" Height="5" Margin="0,0,10,0"
+                                     IsIndeterminate="True"
+                                     Foreground="#041737" Background="#D0DEFF"
+                                     Visibility="{Binding IsBusy, Converter={StaticResource BoolVis}}"/>
+                        <TextBlock Text="{Binding ImportStatus}"
+                                   FontSize="12" Foreground="#555"
+                                   VerticalAlignment="Center"
+                                   MaxWidth="440" TextTrimming="CharacterEllipsis"/>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <!-- View container: Import + Settings share this cell -->
+            <Grid>
+
+                <!-- ════════════════════════════════════════════════
+                     VIEW: IMPORT
+                     ════════════════════════════════════════════════ -->
+                <Grid x:Name="ViewImport" Margin="20,16,20,20">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="240" MinWidth="160"/>
-                        <ColumnDefinition Width="6"/>
+                        <ColumnDefinition Width="260" MinWidth="160"/>
+                        <ColumnDefinition Width="16"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- ── Left: Table list ───────────────────────────── -->
-                    <DockPanel Grid.Column="0">
-
-                        <TextBlock DockPanel.Dock="Top" Text="Tabellen" Style="{StaticResource SectionHeader}"/>
-
-                        <!-- Toolbar: search + load -->
-                        <DockPanel DockPanel.Dock="Top" Margin="0,0,0,6">
-                            <Button DockPanel.Dock="Right"
-                                    Content="Laden"
+                    <!-- Left: Table card -->
+                    <Border Grid.Column="0" Style="{StaticResource CardStyle}" Padding="16" Margin="0">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" Text="Tabellen"
+                                       Style="{StaticResource CardTitleStyle}" Margin="0,0,0,10"/>
+                            <Button DockPanel.Dock="Top"
+                                    Content="Tabellen laden"
                                     Command="{Binding LoadTablesCommand}"
-                                    Style="{StaticResource StdButton}"
-                                    Margin="4,0,0,0" Padding="8,4"/>
-                            <Grid>
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    HorizontalAlignment="Stretch"
+                                    Margin="0,0,0,8"/>
+                            <!-- Search with placeholder -->
+                            <Grid DockPanel.Dock="Top" Margin="0,0,0,10">
                                 <TextBox Text="{Binding TableSearch, UpdateSourceTrigger=PropertyChanged}"
-                                         VerticalContentAlignment="Center" Padding="4,3"/>
-                                <TextBlock Text="Tabelle suchen…">
+                                         Style="{StaticResource FormTextBoxStyle}"
+                                         Margin="0" Padding="8,6,8,6"/>
+                                <TextBlock IsHitTestVisible="False" Text="Tabelle suchen…"
+                                           Foreground="#BBBBBB" VerticalAlignment="Center" Margin="10,0">
                                     <TextBlock.Style>
-                                        <Style TargetType="TextBlock" BasedOn="{StaticResource Placeholder}">
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding TableSearch}" Value="">
                                                     <Setter Property="Visibility" Value="Visible"/>
@@ -124,32 +303,43 @@
                                     </TextBlock.Style>
                                 </TextBlock>
                             </Grid>
+                            <!-- Table list -->
+                            <ListBox ItemsSource="{Binding FilteredTables}"
+                                     SelectedItem="{Binding SelectedTable}"
+                                     BorderThickness="1" BorderBrush="#E4EAF4"
+                                     Background="White"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}"
+                                                   FontFamily="Consolas" FontSize="12"
+                                                   Padding="2,1"/>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="Padding" Value="8,5"/>
+                                        <Setter Property="Cursor" Value="Hand"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Background" Value="#E4EDFF"/>
+                                                <Setter Property="Foreground" Value="#041737"/>
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#F0F5FF"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                            </ListBox>
                         </DockPanel>
+                    </Border>
 
-                        <!-- Table list -->
-                        <ListBox ItemsSource="{Binding FilteredTables}"
-                                 SelectedItem="{Binding SelectedTable}"
-                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                 BorderBrush="#DDDDDD">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="12" Padding="2,1"/>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </DockPanel>
+                    <!-- Right: CSV + Mapping -->
+                    <DockPanel Grid.Column="2">
 
-                    <!-- ── Splitter ───────────────────────────────────── -->
-                    <GridSplitter Grid.Column="1" Width="6" HorizontalAlignment="Stretch"
-                                  Background="#DDDDDD" ResizeBehavior="PreviousAndNext"/>
-
-                    <!-- ── Right: CSV + Mapping ───────────────────────── -->
-                    <DockPanel Grid.Column="2" Margin="8,0,0,0">
-
-                        <!-- CSV file row -->
-                        <Border DockPanel.Dock="Top"
-                                Background="#FAFAFA" BorderBrush="#DDDDDD" BorderThickness="1"
-                                CornerRadius="3" Padding="8,6" Margin="0,0,0,8">
+                        <!-- CSV row card -->
+                        <Border DockPanel.Dock="Top" Style="{StaticResource CardStyle}" Padding="16,12">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
@@ -159,18 +349,30 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="CSV-Datei:" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                <TextBox Grid.Column="1" Text="{Binding CsvFilePath, Mode=OneWay}"
-                                         IsReadOnly="True" VerticalContentAlignment="Center"
-                                         Background="#F5F5F5" Padding="4,3"/>
+                                <TextBlock Grid.Column="0" Text="CSV-Datei:"
+                                           VerticalAlignment="Center"
+                                           Style="{StaticResource FormLabelStyle}"
+                                           Margin="0,0,10,0"/>
+                                <TextBox Grid.Column="1"
+                                         Text="{Binding CsvFilePath, Mode=OneWay}"
+                                         IsReadOnly="True"
+                                         Style="{StaticResource FormTextBoxStyle}"
+                                         Margin="0" Background="#F8F9FB"/>
                                 <Button Grid.Column="2" Content="Durchsuchen…"
                                         Command="{Binding BrowseCsvCommand}"
-                                        Style="{StaticResource StdButton}" Margin="6,0,0,0"/>
+                                        Style="{StaticResource SecondaryButtonStyle}"
+                                        Margin="8,0,0,0"/>
                                 <Button Grid.Column="3" Content="Neu laden"
                                         Command="{Binding ReloadCsvCommand}"
-                                        Style="{StaticResource StdButton}" Margin="4,0,0,0"/>
-                                <TextBlock Grid.Column="4" Text="Trennzeichen:" VerticalAlignment="Center" Margin="14,0,6,0"/>
+                                        Style="{StaticResource SecondaryButtonStyle}"
+                                        Margin="6,0,0,0"/>
+                                <TextBlock Grid.Column="4" Text="Trennzeichen:"
+                                           VerticalAlignment="Center"
+                                           Style="{StaticResource FormLabelStyle}"
+                                           Margin="18,0,8,0"/>
                                 <ComboBox Grid.Column="5" Width="130"
+                                          Style="{StaticResource FormComboBoxStyle}"
+                                          Margin="0"
                                           ItemsSource="{Binding DelimiterOptions}"
                                           DisplayMemberPath="Key"
                                           SelectedValuePath="Value"
@@ -178,28 +380,27 @@
                             </Grid>
                         </Border>
 
-                        <!-- Mapping toolbar -->
-                        <Border DockPanel.Dock="Top"
-                                Background="#FAFAFA" BorderBrush="#DDDDDD" BorderThickness="1"
-                                CornerRadius="3" Padding="8,6" Margin="0,0,0,8">
+                        <!-- Toolbar card -->
+                        <Border DockPanel.Dock="Top" Style="{StaticResource CardStyle}" Padding="16,12">
                             <DockPanel>
                                 <Button DockPanel.Dock="Right"
                                         Content="  Importieren  "
                                         Command="{Binding ImportCommand}"
-                                        Style="{StaticResource PrimaryButton}"/>
+                                        Style="{StaticResource PrimaryButtonStyle}"/>
                                 <CheckBox DockPanel.Dock="Right"
                                           IsChecked="{Binding UpdateExisting}"
                                           VerticalAlignment="Center"
-                                          Margin="0,0,10,0"
-                                          Cursor="Hand"
-                                          ToolTip="Vorhandene Zeilen per SQL MERGE aktualisieren. Schlüsselspalten in der Tabelle unten markieren.">
-                                    <TextBlock Text="Vorhandene Zeilen aktualisieren">
+                                          Margin="0,0,16,0" Cursor="Hand" FontSize="13"
+                                          ToolTip="SQL MERGE: Vorhandene Zeilen per Schlüsselspalte aktualisieren">
+                                    <TextBlock>
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
+                                                <Setter Property="Text" Value="Vorhandene Zeilen aktualisieren"/>
+                                                <Setter Property="Foreground" Value="#555"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding UpdateExisting}" Value="True">
                                                         <Setter Property="FontWeight" Value="SemiBold"/>
-                                                        <Setter Property="Foreground" Value="#0078D4"/>
+                                                        <Setter Property="Foreground" Value="#041737"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -209,14 +410,15 @@
                                 <Button DockPanel.Dock="Right"
                                         Content="Auto-Mapping"
                                         Command="{Binding AutoMapCommand}"
-                                        Style="{StaticResource StdButton}" Margin="0,0,8,0"/>
+                                        Style="{StaticResource SecondaryButtonStyle}"
+                                        Margin="0,0,10,0"/>
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <TextBlock Text="Zieltabelle: " Foreground="{StaticResource MutedBrush}"/>
-                                    <TextBlock Text="{Binding SelectedTable}" FontWeight="SemiBold"
-                                               Foreground="#0078D4"
-                                               FontFamily="Consolas"/>
-                                    <TextBlock Text=" (keine Tabelle ausgewählt)"
-                                               Foreground="{StaticResource MutedBrush}" FontStyle="Italic">
+                                    <TextBlock Text="Zieltabelle: " Foreground="#888" FontSize="13"/>
+                                    <TextBlock Text="{Binding SelectedTable}"
+                                               FontWeight="SemiBold" Foreground="#041737"
+                                               FontFamily="Consolas" FontSize="13"/>
+                                    <TextBlock Foreground="#BBB" FontStyle="Italic" FontSize="13"
+                                               Text="(keine Tabelle gewählt)">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -232,196 +434,186 @@
                             </DockPanel>
                         </Border>
 
-                        <!-- Column mapping DataGrid -->
-                        <DataGrid ItemsSource="{Binding ColumnMappings}"
-                                  AutoGenerateColumns="False"
-                                  CanUserAddRows="False"
-                                  CanUserDeleteRows="False"
-                                  CanUserReorderColumns="False"
-                                  CanUserResizeRows="False"
-                                  SelectionMode="Single"
-                                  GridLinesVisibility="Horizontal"
-                                  HeadersVisibility="Column"
-                                  RowBackground="White"
-                                  AlternatingRowBackground="#F7F9FF"
-                                  BorderBrush="#DDDDDD"
-                                  HorizontalGridLinesBrush="#EEEEEE"
-                                  IsReadOnly="False">
-                            <DataGrid.ColumnHeaderStyle>
-                                <Style TargetType="DataGridColumnHeader">
-                                    <Setter Property="Background" Value="#F0F0F0"/>
-                                    <Setter Property="BorderBrush" Value="#DDDDDD"/>
-                                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
-                                    <Setter Property="Padding" Value="8,5"/>
-                                    <Setter Property="FontWeight" Value="SemiBold"/>
-                                </Style>
-                            </DataGrid.ColumnHeaderStyle>
-                            <DataGrid.Columns>
+                        <!-- Mapping DataGrid card (fills remaining height) -->
+                        <Border Style="{StaticResource CardStyle}" Padding="0" Margin="0">
+                            <DataGrid ItemsSource="{Binding ColumnMappings}"
+                                      AutoGenerateColumns="False"
+                                      CanUserAddRows="False"
+                                      CanUserDeleteRows="False"
+                                      CanUserReorderColumns="False"
+                                      CanUserResizeRows="False"
+                                      SelectionMode="Single"
+                                      GridLinesVisibility="Horizontal"
+                                      HeadersVisibility="Column"
+                                      RowBackground="White"
+                                      AlternatingRowBackground="#F8FAFF"
+                                      HorizontalGridLinesBrush="#EEF1F8"
+                                      BorderThickness="0"
+                                      ColumnHeaderStyle="{StaticResource DgHeaderStyle}"
+                                      IsReadOnly="False">
+                                <DataGrid.Columns>
 
-                                <!-- DB Column -->
-                                <DataGridTextColumn Header="DB-Spalte"
-                                                    Binding="{Binding DbColumn}"
-                                                    IsReadOnly="True" Width="190">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="FontFamily" Value="Consolas"/>
-                                            <Setter Property="Padding" Value="8,4"/>
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
+                                    <DataGridTextColumn Header="DB-Spalte"
+                                                        Binding="{Binding DbColumn}"
+                                                        IsReadOnly="True" Width="185">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="FontFamily" Value="Consolas"/>
+                                                <Setter Property="FontSize" Value="12"/>
+                                                <Setter Property="Padding" Value="12,6"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
 
-                                <!-- Data type -->
-                                <DataGridTextColumn Header="Datentyp"
-                                                    Binding="{Binding DbColumnType}"
-                                                    IsReadOnly="True" Width="110">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Foreground" Value="#555555"/>
-                                            <Setter Property="Padding" Value="8,4"/>
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Datentyp"
+                                                        Binding="{Binding DbColumnType}"
+                                                        IsReadOnly="True" Width="105">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="#666"/>
+                                                <Setter Property="Padding" Value="12,6"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
 
-                                <!-- Nullable -->
-                                <DataGridTemplateColumn Header="Nullable" Width="70" IsReadOnly="True">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                       FontSize="14">
-                                                <TextBlock.Style>
-                                                    <Style TargetType="TextBlock">
-                                                        <Setter Property="Text" Value="✗"/>
-                                                        <Setter Property="Foreground" Value="#CC0000"/>
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding IsNullable}" Value="True">
-                                                                <Setter Property="Text" Value="✓"/>
-                                                                <Setter Property="Foreground" Value="#007700"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </TextBlock.Style>
-                                            </TextBlock>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="Nullable" Width="70" IsReadOnly="True">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center" FontSize="14">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Text" Value="✗"/>
+                                                            <Setter Property="Foreground" Value="#C0392B"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsNullable}" Value="True">
+                                                                    <Setter Property="Text" Value="✓"/>
+                                                                    <Setter Property="Foreground" Value="#27AE60"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
 
-                                <!-- Key column (used for MERGE ON clause) -->
-                                <DataGridTemplateColumn Width="70">
-                                    <DataGridTemplateColumn.Header>
-                                        <StackPanel Orientation="Horizontal" ToolTip="Schlüsselspalten zur Identifikation vorhandener Zeilen (MERGE ON). Nur relevant wenn 'Vorhandene Zeilen aktualisieren' aktiv.">
-                                            <TextBlock Text="Schlüssel"/>
-                                        </StackPanel>
-                                    </DataGridTemplateColumn.Header>
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <CheckBox IsChecked="{Binding IsKey, UpdateSourceTrigger=PropertyChanged}"
-                                                      HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                      Cursor="Hand">
-                                                <CheckBox.Style>
-                                                    <Style TargetType="CheckBox">
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding DataContext.UpdateExisting,
-                                                                RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                         Value="False">
-                                                                <Setter Property="Opacity" Value="0.35"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </CheckBox.Style>
-                                            </CheckBox>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Width="72"
+                                        ToolTip="Schlüsselspalten für MERGE ON (nur bei 'Vorhandene Zeilen aktualisieren')">
+                                        <DataGridTemplateColumn.Header>
+                                            <TextBlock Text="Schlüssel" FontSize="12"/>
+                                        </DataGridTemplateColumn.Header>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox IsChecked="{Binding IsKey, UpdateSourceTrigger=PropertyChanged}"
+                                                          HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                          Cursor="Hand">
+                                                    <CheckBox.Style>
+                                                        <Style TargetType="CheckBox">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding DataContext.UpdateExisting,
+                                                                    RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                             Value="False">
+                                                                    <Setter Property="Opacity" Value="0.3"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </CheckBox.Style>
+                                                </CheckBox>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
 
-                                <!-- CSV column mapping (ComboBox always visible) -->
-                                <DataGridTemplateColumn Header="CSV-Spalte (Mapping)" Width="*" MinWidth="160">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <ComboBox
-                                                ItemsSource="{Binding DataContext.CsvHeadersWithIgnore,
-                                                    RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                SelectedItem="{Binding CsvColumn, UpdateSourceTrigger=PropertyChanged}"
-                                                Padding="6,3" Margin="4,2"
-                                                BorderThickness="1" BorderBrush="#CCCCCC"
-                                                Background="White"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="CSV-Spalte (Mapping)" Width="*" MinWidth="160">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ComboBox
+                                                    ItemsSource="{Binding DataContext.CsvHeadersWithIgnore,
+                                                        RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                    SelectedItem="{Binding CsvColumn, UpdateSourceTrigger=PropertyChanged}"
+                                                    Padding="8,4" Margin="6,3"
+                                                    BorderThickness="1" BorderBrush="#CCCCCC"
+                                                    Background="White" FontSize="13"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
 
-                            </DataGrid.Columns>
-                        </DataGrid>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Border>
+
                     </DockPanel>
                 </Grid>
-            </TabItem>
 
-            <!-- ════════════════════════════════════════════════════════════
-                 TAB 2: Einstellungen
-                 ════════════════════════════════════════════════════════════ -->
-            <TabItem>
-                <TabItem.Header>
-                    <TextBlock Text="  Einstellungen  " FontSize="13" Padding="4,2"/>
-                </TabItem.Header>
+                <!-- ════════════════════════════════════════════════
+                     VIEW: EINSTELLUNGEN
+                     ════════════════════════════════════════════════ -->
+                <ScrollViewer x:Name="ViewSettings"
+                              Visibility="Collapsed"
+                              VerticalScrollBarVisibility="Auto"
+                              Background="#F5F7FA">
+                    <StackPanel Margin="20,16,20,24" MaxWidth="560">
 
-                <ScrollViewer VerticalScrollBarVisibility="Auto" Background="#F3F3F3">
-                    <StackPanel Margin="20,16" MaxWidth="580">
-
-                        <!-- ── Server ──────────────────────────────────── -->
-                        <GroupBox Margin="0,0,0,14" Padding="12,10">
-                            <GroupBox.Header>
-                                <TextBlock Text="Server" FontWeight="SemiBold" FontSize="13"/>
-                            </GroupBox.Header>
+                        <!-- Server card -->
+                        <Border Style="{StaticResource CardStyle}">
                             <StackPanel>
-                                <TextBlock Text="Gespeicherte Server:" Margin="0,0,0,4" Foreground="#555"/>
-                                <Grid Margin="0,0,0,10">
+                                <TextBlock Text="Server" Style="{StaticResource CardTitleStyle}"/>
+                                <TextBlock Text="Gespeicherte Server" Style="{StaticResource FormLabelStyle}"/>
+                                <Grid Margin="0,4,0,12">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <ComboBox Grid.Column="0"
+                                              Style="{StaticResource FormComboBoxStyle}"
+                                              Margin="0"
                                               ItemsSource="{Binding Servers}"
                                               SelectedItem="{Binding SelectedServer}"
                                               IsEditable="True"
-                                              Text="{Binding SelectedServer, UpdateSourceTrigger=PropertyChanged}"
-                                              Padding="6,4"/>
+                                              Text="{Binding SelectedServer, UpdateSourceTrigger=PropertyChanged}"/>
                                     <Button Grid.Column="1" Content="Entfernen"
                                             Command="{Binding RemoveServerCommand}"
-                                            Style="{StaticResource StdButton}" Margin="8,0,0,0"/>
+                                            Style="{StaticResource SecondaryButtonStyle}"
+                                            Margin="8,0,0,0"/>
                                 </Grid>
-                                <TextBlock Text="Server hinzufügen:" Margin="0,0,0,4" Foreground="#555"/>
-                                <Grid>
+                                <TextBlock Text="Server hinzufügen" Style="{StaticResource FormLabelStyle}"/>
+                                <Grid Margin="0,4,0,0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBox Grid.Column="0"
-                                             Text="{Binding NewServer, UpdateSourceTrigger=PropertyChanged}"
-                                             VerticalContentAlignment="Center" Padding="6,4"/>
+                                             Style="{StaticResource FormTextBoxStyle}"
+                                             Margin="0"
+                                             Text="{Binding NewServer, UpdateSourceTrigger=PropertyChanged}"/>
                                     <Button Grid.Column="1" Content="Hinzufügen"
                                             Command="{Binding AddServerCommand}"
-                                            Style="{StaticResource StdButton}" Margin="8,0,0,0"/>
+                                            Style="{StaticResource SecondaryButtonStyle}"
+                                            Margin="8,0,0,0"/>
                                 </Grid>
                             </StackPanel>
-                        </GroupBox>
+                        </Border>
 
-                        <!-- ── Authentifizierung ───────────────────────── -->
-                        <GroupBox Margin="0,0,0,14" Padding="12,10">
-                            <GroupBox.Header>
-                                <TextBlock Text="Authentifizierung" FontWeight="SemiBold" FontSize="13"/>
-                            </GroupBox.Header>
+                        <!-- Auth card -->
+                        <Border Style="{StaticResource CardStyle}">
                             <StackPanel>
+                                <TextBlock Text="Authentifizierung" Style="{StaticResource CardTitleStyle}"/>
                                 <RadioButton Content="Windows-Authentifizierung (NT Auth)"
                                              IsChecked="{Binding UseNtAuth}"
                                              GroupName="AuthMode"
-                                             Margin="0,0,0,8" Padding="4,2"/>
+                                             FontSize="14" Padding="4,2"
+                                             Margin="0,0,0,10" Cursor="Hand"/>
                                 <RadioButton Content="SQL Server-Authentifizierung"
                                              IsChecked="{Binding UseSqlAuth}"
                                              GroupName="AuthMode"
-                                             Margin="0,0,0,8" Padding="4,2"/>
+                                             FontSize="14" Padding="4,2"
+                                             Margin="0,0,0,14" Cursor="Hand"/>
 
-                                <!-- SQL Auth credentials (shown only when SQL auth selected) -->
-                                <Border Margin="20,4,0,0" Padding="12,10"
-                                        Background="#FAFAFA" BorderBrush="#DDDDDD" BorderThickness="1"
-                                        CornerRadius="3">
+                                <!-- SQL credentials (hidden for NT Auth) -->
+                                <Border Padding="16,14"
+                                        Background="#F8FAFF"
+                                        BorderBrush="#DCE6F5" BorderThickness="1"
+                                        CornerRadius="4">
                                     <Border.Style>
                                         <Style TargetType="Border">
                                             <Setter Property="Visibility" Value="Visible"/>
@@ -432,64 +624,56 @@
                                             </Style.Triggers>
                                         </Style>
                                     </Border.Style>
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="8"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="110"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Benutzername:"
-                                                   VerticalAlignment="Center" Foreground="#555"/>
-                                        <TextBox Grid.Row="0" Grid.Column="1"
-                                                 Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
-                                                 Padding="6,4"/>
-                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Passwort:"
-                                                   VerticalAlignment="Center" Foreground="#555"/>
-                                        <PasswordBox Grid.Row="2" Grid.Column="1"
-                                                     x:Name="PwdBox" Padding="6,4"/>
-                                    </Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Benutzername" Style="{StaticResource FormLabelStyle}"/>
+                                        <TextBox Style="{StaticResource FormTextBoxStyle}"
+                                                 Margin="0,4,0,12"
+                                                 Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <TextBlock Text="Passwort" Style="{StaticResource FormLabelStyle}"/>
+                                        <PasswordBox x:Name="PwdBox"
+                                                     Style="{StaticResource FormPasswordBoxStyle}"
+                                                     Margin="0,4,0,0"/>
+                                    </StackPanel>
                                 </Border>
                             </StackPanel>
-                        </GroupBox>
+                        </Border>
 
-                        <!-- ── Datenbank ───────────────────────────────── -->
-                        <GroupBox Margin="0,0,0,14" Padding="12,10">
-                            <GroupBox.Header>
-                                <TextBlock Text="Datenbank" FontWeight="SemiBold" FontSize="13"/>
-                            </GroupBox.Header>
+                        <!-- Database card -->
+                        <Border Style="{StaticResource CardStyle}">
                             <StackPanel>
-                                <Grid Margin="0,0,0,8">
+                                <TextBlock Text="Datenbank" Style="{StaticResource CardTitleStyle}"/>
+                                <TextBlock Text="Verfügbare Datenbanken" Style="{StaticResource FormLabelStyle}"/>
+                                <Grid Margin="0,4,0,12">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <ComboBox Grid.Column="0"
+                                              Style="{StaticResource FormComboBoxStyle}"
+                                              Margin="0"
                                               ItemsSource="{Binding Databases}"
-                                              SelectedItem="{Binding SelectedDatabase}"
-                                              Padding="6,4"/>
+                                              SelectedItem="{Binding SelectedDatabase}"/>
                                     <Button Grid.Column="1" Content="Verbinden"
                                             Command="{Binding LoadDatabasesCommand}"
-                                            Style="{StaticResource StdButton}" Margin="8,0,0,0"/>
+                                            Style="{StaticResource SecondaryButtonStyle}"
+                                            Margin="8,0,0,0"/>
                                 </Grid>
                                 <TextBlock Text="{Binding ConnectionStatus}"
-                                           Foreground="#555" FontStyle="Italic" TextWrapping="Wrap"/>
+                                           FontSize="12" Foreground="#555"
+                                           FontStyle="Italic" TextWrapping="Wrap"/>
                             </StackPanel>
-                        </GroupBox>
+                        </Border>
 
-                        <!-- ── Save button ────────────────────────────── -->
+                        <!-- Save -->
                         <Button Content="  Einstellungen speichern  "
                                 Command="{Binding SaveSettingsCommand}"
-                                Style="{StaticResource PrimaryButton}"
+                                Style="{StaticResource PrimaryButtonStyle}"
                                 HorizontalAlignment="Left"/>
 
                     </StackPanel>
                 </ScrollViewer>
-            </TabItem>
 
-        </TabControl>
-    </DockPanel>
+            </Grid>
+        </DockPanel>
+    </Grid>
 </Window>
