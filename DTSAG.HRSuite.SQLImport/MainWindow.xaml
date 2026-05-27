@@ -498,10 +498,10 @@
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
 
-                                    <DataGridTemplateColumn Width="72"
-                                        ToolTip="Schlüsselspalten für MERGE ON (nur bei 'Vorhandene Zeilen aktualisieren')">
+                                    <DataGridTemplateColumn Width="72">
                                         <DataGridTemplateColumn.Header>
-                                            <TextBlock Text="Schlüssel" FontSize="12"/>
+                                            <TextBlock Text="Schlüssel" FontSize="12"
+                                                       ToolTip="Schlüsselspalten für MERGE ON (nur bei 'Vorhandene Zeilen aktualisieren')"/>
                                         </DataGridTemplateColumn.Header>
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
