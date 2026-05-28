@@ -382,7 +382,8 @@
 
                         <!-- Toolbar card -->
                         <Border DockPanel.Dock="Top" Style="{StaticResource CardStyle}" Padding="16,12">
-                            <DockPanel>
+                            <StackPanel>
+                            <DockPanel Margin="0,0,0,10">
                                 <Button DockPanel.Dock="Right"
                                         Content="  Importieren  "
                                         Command="{Binding ImportCommand}"
@@ -432,6 +433,26 @@
                                     </TextBlock>
                                 </StackPanel>
                             </DockPanel>
+
+                            <!-- Import-Optionen -->
+                            <Border Background="#F8FAFF" BorderBrush="#DCE6F5"
+                                    BorderThickness="1" CornerRadius="4" Padding="14,8">
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding IdentityInsert}"
+                                              VerticalAlignment="Center"
+                                              Margin="0,0,24,0" Cursor="Hand" FontSize="12"
+                                              ToolTip="SqlBulkCopyOptions.KeepIdentity / SET IDENTITY_INSERT ON – importiert eigene Werte in Identity-Spalten. Identity-Spalten werden dann nicht mehr ignoriert.">
+                                        <TextBlock Text="IDENTITY INSERT" Foreground="#444"/>
+                                    </CheckBox>
+                                    <CheckBox IsChecked="{Binding DisableConstraints}"
+                                              VerticalAlignment="Center"
+                                              Cursor="Hand" FontSize="12"
+                                              ToolTip="ALTER TABLE … NOCHECK CONSTRAINT ALL vor dem Import, danach CHECK CONSTRAINT ALL. Erlaubt das Importieren von Daten, die FK-/Check-Constraints verletzen würden (z. B. wenn referenzierte Tabellen noch nicht befüllt sind).">
+                                        <TextBlock Text="Constraints deaktivieren" Foreground="#444"/>
+                                    </CheckBox>
+                                </StackPanel>
+                            </Border>
+                            </StackPanel>
                         </Border>
 
                         <!-- Mapping DataGrid card (fills remaining height) -->
@@ -494,6 +515,31 @@
                                                         </Style>
                                                     </TextBlock.Style>
                                                 </TextBlock>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+                                    <!-- PK / FK / Identity badges -->
+                                    <DataGridTemplateColumn Header="" Width="80" IsReadOnly="True">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" Margin="8,0" VerticalAlignment="Center">
+                                                    <Border CornerRadius="2" Padding="4,1" Margin="0,0,3,0"
+                                                            Background="#041737"
+                                                            Visibility="{Binding IsPrimaryKey, Converter={StaticResource BoolVis}}">
+                                                        <TextBlock Text="PK" FontSize="10" FontWeight="Bold" Foreground="White"/>
+                                                    </Border>
+                                                    <Border CornerRadius="2" Padding="4,1" Margin="0,0,3,0"
+                                                            Background="#7B3FA0"
+                                                            Visibility="{Binding IsIdentity, Converter={StaticResource BoolVis}}">
+                                                        <TextBlock Text="ID" FontSize="10" FontWeight="Bold" Foreground="White"/>
+                                                    </Border>
+                                                    <Border CornerRadius="2" Padding="4,1"
+                                                            Background="#B76E00"
+                                                            Visibility="{Binding IsForeignKey, Converter={StaticResource BoolVis}}">
+                                                        <TextBlock Text="FK" FontSize="10" FontWeight="Bold" Foreground="White"/>
+                                                    </Border>
+                                                </StackPanel>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>

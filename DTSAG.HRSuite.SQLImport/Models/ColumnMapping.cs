@@ -11,6 +11,9 @@ public class ColumnMapping : INotifyPropertyChanged
     public string DbColumn { get; init; } = string.Empty;
     public string DbColumnType { get; init; } = string.Empty;
     public bool IsNullable { get; init; }
+    public bool IsPrimaryKey { get; init; }
+    public bool IsForeignKey { get; init; }
+    public bool IsIdentity { get; init; }
 
     public string CsvColumn
     {
