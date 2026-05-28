@@ -6,6 +6,7 @@ namespace DTSAG.HRSuite.SQLImport.Models;
 public class ColumnMapping : INotifyPropertyChanged
 {
     private string _csvColumn = "(ignorieren)";
+    private string _fixedValue = string.Empty;
     private bool _isKey;
 
     public string DbColumn { get; init; } = string.Empty;
@@ -18,8 +19,22 @@ public class ColumnMapping : INotifyPropertyChanged
     public string CsvColumn
     {
         get => _csvColumn;
-        set { _csvColumn = value; OnPropertyChanged(); }
+        set
+        {
+            _csvColumn = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(IsFixedValueEnabled));
+        }
     }
+
+    public string FixedValue
+    {
+        get => _fixedValue;
+        set { _fixedValue = value; OnPropertyChanged(); }
+    }
+
+    // Fester Wert ist nur sinnvoll wenn keine CSV-Spalte zugeordnet ist
+    public bool IsFixedValueEnabled => _csvColumn == "(ignorieren)";
 
     public bool IsKey
     {
