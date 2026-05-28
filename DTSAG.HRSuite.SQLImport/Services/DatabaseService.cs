@@ -137,7 +137,8 @@ public class DatabaseService(AppSettings settings)
         bool identityInsert, bool disableConstraints)
     {
         var active = mappings
-            .Where(m => m.CsvColumn != "(ignorieren)" && !string.IsNullOrEmpty(m.CsvColumn))
+            .Where(m => (m.CsvColumn != "(ignorieren)" && !string.IsNullOrEmpty(m.CsvColumn))
+                     || !string.IsNullOrEmpty(m.FixedValue))
             .ToList();
         if (active.Count == 0) return 0;
 
@@ -179,7 +180,8 @@ public class DatabaseService(AppSettings settings)
         bool identityInsert, bool disableConstraints)
     {
         var active = mappings
-            .Where(m => m.CsvColumn != "(ignorieren)" && !string.IsNullOrEmpty(m.CsvColumn))
+            .Where(m => (m.CsvColumn != "(ignorieren)" && !string.IsNullOrEmpty(m.CsvColumn))
+                     || !string.IsNullOrEmpty(m.FixedValue))
             .ToList();
         var keyColumns = active.Where(m => m.IsKey).ToList();
         var valueColumns = active.Where(m => !m.IsKey).ToList();
@@ -275,9 +277,14 @@ public class DatabaseService(AppSettings settings)
         {
             var dr = dt.NewRow();
             foreach (var m in active)
-                dr[m.DbColumn] = row.TryGetValue(m.CsvColumn, out var v) && !string.IsNullOrEmpty(v)
-                    ? v
-                    : DBNull.Value;
+            {
+                if (m.CsvColumn != "(ignorieren)" && row.TryGetValue(m.CsvColumn, out var v) && !string.IsNullOrEmpty(v))
+                    dr[m.DbColumn] = v;                          // CSV-Wert hat Vorrang
+                else if (!string.IsNullOrEmpty(m.FixedValue))
+                    dr[m.DbColumn] = m.FixedValue;               // Fester Wert als Fallback
+                else
+                    dr[m.DbColumn] = DBNull.Value;
+            }
             dt.Rows.Add(dr);
         }
         return dt;

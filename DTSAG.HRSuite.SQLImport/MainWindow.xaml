@@ -570,7 +570,7 @@
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
 
-                                    <DataGridTemplateColumn Header="CSV-Spalte (Mapping)" Width="*" MinWidth="160">
+                                    <DataGridTemplateColumn Header="CSV-Spalte (Mapping)" Width="*" MinWidth="150">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <ComboBox
@@ -580,6 +580,40 @@
                                                     Padding="8,4" Margin="6,3"
                                                     BorderThickness="1" BorderBrush="#CCCCCC"
                                                     Background="White" FontSize="13"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+                                    <!-- Fester Wert – aktiv wenn CSV-Spalte auf (ignorieren) steht -->
+                                    <DataGridTemplateColumn Width="160" MinWidth="100">
+                                        <DataGridTemplateColumn.Header>
+                                            <TextBlock Text="Fester Wert"
+                                                       ToolTip="Konstanter Wert der für jede Zeile eingetragen wird. Nur aktiv wenn 'CSV-Spalte' auf (ignorieren) steht."/>
+                                        </DataGridTemplateColumn.Header>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBox Text="{Binding FixedValue, UpdateSourceTrigger=PropertyChanged}"
+                                                         IsEnabled="{Binding IsFixedValueEnabled}"
+                                                         Padding="8,4" Margin="6,3"
+                                                         BorderThickness="1" FontSize="13">
+                                                    <TextBox.Style>
+                                                        <Style TargetType="TextBox">
+                                                            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+                                                            <Setter Property="Background" Value="White"/>
+                                                            <Setter Property="Foreground" Value="#222"/>
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsEnabled" Value="False">
+                                                                    <Setter Property="Background" Value="#F0F0F0"/>
+                                                                    <Setter Property="Foreground" Value="#AAAAAA"/>
+                                                                    <Setter Property="BorderBrush" Value="#E0E0E0"/>
+                                                                </Trigger>
+                                                                <Trigger Property="IsEnabled" Value="True">
+                                                                    <Setter Property="BorderBrush" Value="#A0B8E0"/>
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBox.Style>
+                                                </TextBox>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
