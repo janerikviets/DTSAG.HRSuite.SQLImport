@@ -144,6 +144,7 @@ public class DatabaseService(AppSettings settings)
 
         var dt = BuildDataTable(active, rows);
         var bracketedTable = BracketTable(schemaTable);
+        var hasIdentityInActive = active.Any(m => m.IsIdentity);
 
         using var conn = CreateConnection();
         await conn.OpenAsync();
@@ -153,17 +154,30 @@ public class DatabaseService(AppSettings settings)
 
         try
         {
-            var options = identityInsert
-                ? SqlBulkCopyOptions.KeepIdentity
-                : SqlBulkCopyOptions.Default;
+            var colDefs = string.Join(", ", active.Select(m => $"[{m.DbColumn}] NVARCHAR(MAX)"));
+            await ExecAsync(conn, $"CREATE TABLE #ImportStage ({colDefs})");
 
-            using var bc = new SqlBulkCopy(conn, options, null)
+            using (var bc = new SqlBulkCopy(conn)
+                   { DestinationTableName = "#ImportStage", BatchSize = 500 })
             {
-                DestinationTableName = schemaTable,
-                BatchSize = 500
-            };
-            foreach (var m in active) bc.ColumnMappings.Add(m.DbColumn, m.DbColumn);
-            await bc.WriteToServerAsync(dt);
+                foreach (var m in active) bc.ColumnMappings.Add(m.DbColumn, m.DbColumn);
+                await bc.WriteToServerAsync(dt);
+            }
+
+            if (identityInsert && hasIdentityInActive)
+                await ExecAsync(conn, $"SET IDENTITY_INSERT {bracketedTable} ON");
+
+            try
+            {
+                var cols = string.Join(", ", active.Select(m => $"[{m.DbColumn}]"));
+                await ExecAsync(conn,
+                    $"INSERT INTO {bracketedTable} ({cols}) SELECT {cols} FROM #ImportStage");
+            }
+            finally
+            {
+                if (identityInsert && hasIdentityInActive)
+                    await ExecAsync(conn, $"SET IDENTITY_INSERT {bracketedTable} OFF");
+            }
         }
         finally
         {
